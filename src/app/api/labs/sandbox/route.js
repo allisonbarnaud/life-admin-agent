@@ -1,6 +1,10 @@
 import { runSnippet } from "@/lib/sandbox";
+import { requireApiAuth } from "@/lib/require-auth";
 
 export async function POST(req) {
+  const unauthorized = await requireApiAuth();
+  if (unauthorized) return unauthorized;
+
   const body = await req.json().catch(() => ({}));
   const code = body.code ?? 'console.log("hello from raw vercel sandbox")';
 

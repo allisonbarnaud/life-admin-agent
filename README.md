@@ -15,6 +15,7 @@ Eve agent (agent/)
 
 ```bash
 cp .env.example .env.local
+# Set CHAT_PASSWORD (required for the login gate)
 # Set AI_GATEWAY_API_KEY, or: npx vercel link && npx vercel env pull
 
 npm run dev          # Next.js UI + Eve (via withEve)
@@ -22,7 +23,15 @@ npm run dev          # Next.js UI + Eve (via withEve)
 npm run eve:dev      # Eve TUI / REPL
 ```
 
+Visit `/login`, enter `CHAT_PASSWORD`, then use the chat. The home page, lab
+APIs, and Eve channel all check the same session cookie.
+
 Open [http://localhost:3000](http://localhost:3000) for chat.
+
+The chat UI includes a **model selector** (AI Gateway IDs such as
+`anthropic/claude-sonnet-5`). Changing the model remounts `useEveAgent` so the
+next message starts a fresh Eve session with that model. A small metrics strip
+shows TTFT, input/output tokens from `step.completed`, and approximate cost.
 
 ## Layout
 
@@ -34,14 +43,20 @@ Open [http://localhost:3000](http://localhost:3000) for chat.
 | `workflows/` | **Lab:** raw Workflow SDK pipeline |
 | `src/app/api/labs/` | **Lab:** HTTP entrypoints for raw Workflow + Sandbox |
 | `src/lib/sandbox.js` | **Lab:** direct `@vercel/sandbox` helper |
+| `src/lib/chat-models.js` | Curated Gateway models, pricing estimates, header name |
 
 ## Labs
+
+Lab APIs require the same session cookie as the UI (`life_admin_session` from
+`/login`). After signing in in the browser, copy the cookie into `curl`, or hit
+the endpoints from the logged-in origin.
 
 **Workflow (durable steps)**
 
 ```bash
 curl -X POST http://localhost:3000/api/labs/workflow \
   -H 'content-type: application/json' \
+  -H "cookie: life_admin_session=$SESSION" \
   -d '{"topic":"weekly meal plan"}'
 
 npx workflow web   # inspect runs
@@ -52,6 +67,7 @@ npx workflow web   # inspect runs
 ```bash
 curl -X POST http://localhost:3000/api/labs/sandbox \
   -H 'content-type: application/json' \
+  -H "cookie: life_admin_session=$SESSION" \
   -d '{"code":"console.log(1+1)"}'
 ```
 
@@ -72,4 +88,7 @@ curl -X POST http://localhost:3000/api/labs/sandbox \
 
 ## Auth note
 
-`agent/channels/eve.ts` allows Vercel OIDC + local Eve/Vercel dev. Replace `placeholderAuth()` before real production browser traffic (or use `none()` only for public demos).
+Browser chat is gated by `CHAT_PASSWORD` (cookie from `/login`). The Eve
+channel accepts that cookie, Vercel OIDC, and local Eve/Vercel dev. The chat
+UI sends `x-life-admin-model`; channel auth copies it into `attributes.model`
+for per-session dynamic model selection.
