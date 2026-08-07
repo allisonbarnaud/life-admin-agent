@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Life Admin Agent
 
-## Getting Started
+Learning project for **Eve** (agent framework), **Vercel Workflows** (durable execution), and **Vercel Sandbox** (isolated compute).
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```text
+Next.js UI (useEveAgent)
+        ↓  /eve/v1/*
+Eve agent (agent/)
+  ├─ tools, skills, channels
+  ├─ durability → Workflows
+  └─ isolation  → Sandbox
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Quick start
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+cp .env.example .env.local
+# Set AI_GATEWAY_API_KEY, or: npx vercel link && npx vercel env pull
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+npm run dev          # Next.js UI + Eve (via withEve)
+# or
+npm run eve:dev      # Eve TUI / REPL
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) for chat.
 
-To learn more about Next.js, take a look at the following resources:
+## Layout
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Path | Role |
+| --- | --- |
+| `agent/` | Eve agent — instructions, tools, sandbox, channel |
+| `agent/tools/` | Typed tools (`list_life_admin_tasks`, `run_in_sandbox`) |
+| `agent/sandbox/` | Sandbox backend + seeded `/workspace` |
+| `workflows/` | **Lab:** raw Workflow SDK pipeline |
+| `src/app/api/labs/` | **Lab:** HTTP entrypoints for raw Workflow + Sandbox |
+| `src/lib/sandbox.js` | **Lab:** direct `@vercel/sandbox` helper |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Labs
 
-## Deploy on Vercel
+**Workflow (durable steps)**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+curl -X POST http://localhost:3000/api/labs/workflow \
+  -H 'content-type: application/json' \
+  -d '{"topic":"weekly meal plan"}'
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+npx workflow web   # inspect runs
+```
+
+**Sandbox (raw microVM)** — needs Vercel auth locally or a Vercel deploy:
+
+```bash
+curl -X POST http://localhost:3000/api/labs/sandbox \
+  -H 'content-type: application/json' \
+  -d '{"code":"console.log(1+1)"}'
+```
+
+## Suggested learning path
+
+1. Chat with the agent (no custom tools needed beyond the stubs).
+2. Call `list_life_admin_tasks` via chat — app-runtime Eve tool.
+3. Call `run_in_sandbox` or ask the agent to `cat NOTES.md` — Eve → Sandbox.
+4. Hit `/api/labs/workflow` and `/api/labs/sandbox` — same primitives without Eve.
+5. Deploy to Vercel (`npx eve deploy` or Git) and watch Agent Runs / Workflows in the dashboard.
+
+## Docs
+
+- [Eve](https://eve.dev/docs) (also `node_modules/eve/docs/`)
+- [Vercel Workflows](https://vercel.com/docs/workflows) / [Workflow SDK](https://useworkflow.dev)
+- [Vercel Sandbox](https://vercel.com/docs/sandbox)
+- [AI Gateway](https://vercel.com/docs/ai-gateway)
+
+## Auth note
+
+`agent/channels/eve.ts` allows Vercel OIDC + local Eve/Vercel dev. Replace `placeholderAuth()` before real production browser traffic (or use `none()` only for public demos).
