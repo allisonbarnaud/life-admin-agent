@@ -7,7 +7,7 @@ import { z } from "zod";
  */
 export default defineTool({
   description:
-    "Write and run a short Node.js snippet inside the agent sandbox under /workspace. Return stdout/stderr.",
+    "Run a short, safe Node.js snippet in the isolated sandbox and return stdout/stderr. Use only for small helpers the user asked for.",
   inputSchema: z.object({
     code: z
       .string()

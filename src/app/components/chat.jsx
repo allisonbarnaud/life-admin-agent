@@ -3,6 +3,7 @@
 import { useEveAgent } from "eve/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  CHAT_MODEL_GROUPS,
   CHAT_MODEL_HEADER,
   CHAT_MODELS,
   DEFAULT_CHAT_MODEL,
@@ -139,27 +140,27 @@ function ChatSession({ modelId }) {
     <div className="flex h-full min-h-0 flex-col">
       <dl className="mb-3 grid grid-cols-2 gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600 sm:grid-cols-4">
         <div>
-          <dt className="font-medium text-slate-500">TTFT</dt>
+          <dt className="font-medium text-slate-500">First token</dt>
           <dd className="mt-0.5 font-[family-name:var(--font-geist-mono)] text-slate-900">
             {formatMs(metrics.ttftMs)}
           </dd>
         </div>
         <div>
-          <dt className="font-medium text-slate-500">Input tokens</dt>
+          <dt className="font-medium text-slate-500">In</dt>
           <dd className="mt-0.5 font-[family-name:var(--font-geist-mono)] text-slate-900">
             {formatTokens(metrics.inputTokens)}
           </dd>
         </div>
         <div>
-          <dt className="font-medium text-slate-500">Output tokens</dt>
+          <dt className="font-medium text-slate-500">Out</dt>
           <dd className="mt-0.5 font-[family-name:var(--font-geist-mono)] text-slate-900">
             {formatTokens(metrics.outputTokens)}
           </dd>
         </div>
         <div>
           <dt className="font-medium text-slate-500">
-            Est. cost
-            {metrics.costSource === "reported" ? " (reported)" : ""}
+            Cost
+            {metrics.costSource === "estimate" ? " (est.)" : ""}
           </dt>
           <dd className="mt-0.5 font-[family-name:var(--font-geist-mono)] text-slate-900">
             {formatUsd(metrics.costUsd)}
@@ -170,8 +171,8 @@ function ChatSession({ modelId }) {
       <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-1 py-2">
         {agent.data.messages.length === 0 ? (
           <p className="text-sm text-slate-500">
-            Ask about tasks, or try: “List my bills tasks” / “Run a node snippet
-            that prints hello from the sandbox”.
+            Try something like “What’s on my bills list?” or “Help me plan
+            errands for Thursday.”
           </p>
         ) : null}
 
@@ -221,7 +222,7 @@ function ChatSession({ modelId }) {
         <input
           name="message"
           disabled={busy}
-          placeholder="Message Life Admin Agent…"
+          placeholder="What do you need sorted?"
           className="min-w-0 flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-teal-600/30 placeholder:text-slate-400 focus:ring-2 disabled:opacity-60"
         />
         <button
@@ -275,16 +276,21 @@ export function Chat() {
             onChange={onModelChange}
             className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-sm text-slate-900 outline-none ring-teal-600/30 focus:ring-2"
           >
-            {CHAT_MODELS.map((model) => (
-              <option key={model.id} value={model.id}>
-                {model.label}
-              </option>
+            {CHAT_MODEL_GROUPS.map((group) => (
+              <optgroup key={group} label={group}>
+                {CHAT_MODELS.filter((model) => model.group === group).map(
+                  (model) => (
+                    <option key={model.id} value={model.id}>
+                      {model.label}
+                    </option>
+                  ),
+                )}
+              </optgroup>
             ))}
           </select>
         </label>
         <p className="text-xs text-slate-500">
-          Switching models starts a fresh Eve session ({modelLabel}). Costs are
-          approximate.
+          Changing the model clears this chat and starts over with {modelLabel}.
         </p>
       </div>
 

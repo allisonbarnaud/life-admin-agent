@@ -19,16 +19,14 @@ export default async function Home() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.18em] text-teal-700">
-              Learning lab
+              Life Admin
             </p>
             <h1 className="mt-1 font-[family-name:var(--font-geist-sans)] text-2xl font-semibold tracking-tight text-slate-900">
-              Life Admin Agent
+              Your everyday admin desk
             </h1>
             <p className="mt-1 max-w-2xl text-sm text-slate-600">
-              Eve agent plus labs for Vercel Workflows and Sandbox. Chat uses{" "}
-              <code className="rounded bg-slate-100 px-1 text-teal-800">useEveAgent</code>.
-              Hit <code className="rounded bg-slate-100 px-1 text-teal-800">/api/labs/*</code> for
-              raw primitives.
+              Bills, errands, reminders, and short plans. Pick a model, ask for
+              help, and keep an eye on speed and cost in the strip above the chat.
             </p>
           </div>
           <LogoutButton />
@@ -42,24 +40,24 @@ export default async function Home() {
 
         <section className="mt-6 grid gap-3 text-sm text-slate-600 sm:grid-cols-3">
           <div>
-            <h2 className="font-medium text-slate-900">Eve</h2>
+            <h2 className="font-medium text-slate-900">Chat</h2>
             <p className="mt-1">
-              Agent files under <code className="text-teal-800">agent/</code> —
-              instructions, tools, sandbox.
+              Ask in plain language. Task lists from tools are sample data until
+              you connect a real store.
             </p>
           </div>
           <div>
-            <h2 className="font-medium text-slate-900">Workflows</h2>
+            <h2 className="font-medium text-slate-900">Models</h2>
             <p className="mt-1">
-              Raw durable pipeline:{" "}
-              <code className="text-teal-800">POST /api/labs/workflow</code>
+              Switching models starts a fresh conversation. Costs in the strip
+              are estimates unless the provider reports them.
             </p>
           </div>
           <div>
-            <h2 className="font-medium text-slate-900">Sandbox</h2>
+            <h2 className="font-medium text-slate-900">Limits</h2>
             <p className="mt-1">
-              Raw microVM run:{" "}
-              <code className="text-teal-800">POST /api/labs/sandbox</code>
+              Not for medical, legal, or tax advice. Do not paste passwords or
+              bank details into the chat.
             </p>
           </div>
         </section>

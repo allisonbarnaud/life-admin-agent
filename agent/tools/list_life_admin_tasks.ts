@@ -7,7 +7,7 @@ import { z } from "zod";
  */
 export default defineTool({
   description:
-    "List sample life-admin tasks for a category (inbox, bills, errands, health).",
+    "List demo life-admin tasks for a category (inbox, bills, errands, health). These are sample items, not the user's real data.",
   inputSchema: z.object({
     category: z
       .enum(["inbox", "bills", "errands", "health", "all"])

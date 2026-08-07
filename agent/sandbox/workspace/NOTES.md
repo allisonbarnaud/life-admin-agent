@@ -1,5 +1,3 @@
-# Sandbox workspace seed
+Scratch notes for this sandbox session.
 
-Files under `agent/sandbox/workspace/` are copied into `/workspace` when a sandbox session starts.
-
-Try asking the agent to `cat NOTES.md` via its bash tool.
+Ask Life Admin to read this file if you want to confirm the workspace is wired up.

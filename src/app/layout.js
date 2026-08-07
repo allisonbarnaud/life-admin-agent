@@ -12,9 +12,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Life Admin Agent",
-  description:
-    "Learning lab for Eve, Vercel Workflows, and Vercel Sandbox",
+  title: "Life Admin",
+  description: "A simple assistant for everyday tasks, bills, and plans.",
 };
 
 export default function RootLayout({ children }) {

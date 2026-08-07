@@ -25,7 +25,7 @@ export function LogoutButton() {
       disabled={busy}
       className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
     >
-      {busy ? "Logging out…" : "Log out"}
+      {busy ? "Signing out…" : "Sign out"}
     </button>
   );
 }

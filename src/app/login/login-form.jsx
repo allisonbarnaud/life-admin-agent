@@ -9,7 +9,7 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(() =>
     searchParams.get("error") === "unconfigured"
-      ? "CHAT_PASSWORD is not configured on the server."
+      ? "Password login is not set up on the server yet."
       : "",
   );
   const [busy, setBusy] = useState(false);
@@ -27,7 +27,7 @@ export function LoginForm() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error || "Could not sign in.");
+        setError(data.error || "Wrong password.");
         setBusy(false);
         return;
       }
@@ -35,7 +35,7 @@ export function LoginForm() {
       router.replace(from && from.startsWith("/") && !from.startsWith("//") ? from : "/");
       router.refresh();
     } catch {
-      setError("Network error. Try again.");
+      setError("Could not reach the server. Try again.");
       setBusy(false);
     }
   }
@@ -68,7 +68,7 @@ export function LoginForm() {
         disabled={busy || !password}
         className="w-full rounded-md bg-teal-700 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {busy ? "Checking…" : "Continue"}
+        {busy ? "Checking…" : "Unlock"}
       </button>
     </form>
   );
